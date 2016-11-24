@@ -16,7 +16,7 @@ public class UsuarioDAO implements IUsuarioDAO {
     private static final String OBTERTODOS = "select idusuario, nome, email from usuario order by nome, email";
     private static final String OBTERPORID = "select idusuario, nome, email from usuario where idusuario = ?";
     private static final String ALTERAR = "update usuario set nome = ?, email = ? where idusuario = ?";
-
+    private static final String OBTERPORNOMEEEMAIL = "select idusuario, nome, email from usuario where lower(nome) = lower(?) and lower(email) = lower(?)";
 
     private Connection conexao;
 
@@ -74,6 +74,7 @@ public class UsuarioDAO implements IUsuarioDAO {
     @Override
     public boolean excluir(Long id) {
         conexao = ConnectionFactory.getConnection();
+
         try {
             PreparedStatement ps = conexao.prepareStatement(EXCLUIR);
             ps.setLong(1, id);
@@ -117,6 +118,7 @@ public class UsuarioDAO implements IUsuarioDAO {
     @Override
     public boolean alterar(Usuario usuario) {
         conexao = ConnectionFactory.getConnection();
+
         try {
             PreparedStatement ps = conexao.prepareStatement(ALTERAR);
             ps.setString(1, usuario.getNome());
@@ -129,6 +131,35 @@ public class UsuarioDAO implements IUsuarioDAO {
         } catch (SQLException ex) {
             System.out.println("Erro ao alterar usuário. Exception: " + ex.getMessage());
             return false;
+        }
+    }
+
+    @Override
+    public Usuario obterPorNomeEEmail(String nome, String email) {
+        conexao = ConnectionFactory.getConnection();
+        Usuario usuario = null;
+
+        try {
+            PreparedStatement ps = conexao.prepareStatement(OBTERPORNOMEEEMAIL);
+            ps.setString(1, nome.toLowerCase());
+            ps.setString(2, email.toLowerCase());
+
+            ResultSet resultado = ps.executeQuery();
+
+            if (resultado.next()) {
+                usuario = new Usuario();
+                usuario.setId(Long.parseLong(resultado.getString("idusuario")));
+                usuario.setNome(resultado.getString("nome"));
+                usuario.setEmail(resultado.getString("email"));
+            }
+
+            ps.close();
+            conexao.close();
+            return usuario;
+
+        } catch (SQLException ex) {
+            System.out.println("Erro ao obter usuário. Exception: " + ex.getMessage());
+            return null;
         }
     }
 

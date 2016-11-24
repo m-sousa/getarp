@@ -30,28 +30,16 @@ public class UsuarioBO {
         return usuarioDAO.alterar(usuario);
     }
 
-    public static ArrayList<String> validacoes(Usuario usuario, String operacao) {
+    public static ArrayList<String> validacoes(Usuario usuario) {
         ArrayList<String> mensagens = new ArrayList<>();
 
-        switch (operacao) {
-            case "cadastro":
-                if (usuario != null) {
-                    if (usuario.getNome().trim().equals("")) {
-                        mensagens.add("O campo Nome é obrigatório.");
-                    }
+        // duplicidade
+        Usuario usuarioEncontrado = usuarioDAO.obterPorNomeEEmail(usuario.getNome(), usuario.getEmail());
 
-//                    if (usuario.getEmail().trim().equals("")) {
-//                        mensagens.add("O campo E-mail é obrigatório.");
-//                    } else {
-//                        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-//                        if (!pattern.matcher(usuario.getEmail()).matches()) {
-//                            mensagens.add("Formato de e-mail inválido..");
-//                        }
-//                    }
-                } else {
-                    mensagens.add("Ocorreu um erro ao realizar operação.");
-                }
+        if (usuarioEncontrado != null) {
+            mensagens.add("Usuário com mesmo Nome e E-mail já cadastrados.");
         }
+
         return mensagens;
     }
 }

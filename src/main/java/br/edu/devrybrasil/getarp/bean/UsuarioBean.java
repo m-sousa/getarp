@@ -34,18 +34,17 @@ public class UsuarioBean {
     }
 
     public String inserirUsuario() {
-        //if (validacoes("cadastro")) {
+        if (!validacoes()) {
+            return null;
+        }
 
-            if (UsuarioBO.inserirUsuario(this.usuario)) {
-                this.usuario = new Usuario();
-                this.usuarios = UsuarioBO.obterTodos();
-                return "listarUsuarios";
-            } else {
-                return "cadastrarUsuario";
-            }
-        //} else {
-        //    return null;
-        //}
+        if (UsuarioBO.inserirUsuario(this.usuario)) {
+            this.usuario = new Usuario();
+            this.usuarios = UsuarioBO.obterTodos();
+            return "listarUsuarios";
+        } else {
+            return null;
+        }
     }
 
     public String excluirUsuario(Long id) {
@@ -68,6 +67,9 @@ public class UsuarioBean {
     }
 
     public String alterarUsuarioSalvar() {
+        if (!validacoes()) {
+            return null;
+        }
 
         if (UsuarioBO.alterarUsuario(this.usuario)) {
             this.usuario = new Usuario();
@@ -76,11 +78,10 @@ public class UsuarioBean {
         } else {
             return null;
         }
-
     }
 
-    public boolean validacoes(String operacao) {
-        ArrayList<String> mensagens = UsuarioBO.validacoes(this.usuario, operacao);
+    public boolean validacoes() {
+        ArrayList<String> mensagens = UsuarioBO.validacoes(this.usuario);
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
         if (mensagens != null && mensagens.size() > 0) {
