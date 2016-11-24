@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  
+      xmlns:h="http://java.sun.com/jsf/html"  
+      xmlns:f="http://java.sun.com/jsf/core"  
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">  
+
+    <ui:composition template="/templates/default/main.xhtml">
+        <ui:define name="content">
+            <div class="row">
+                <span class="col-md-6">
+                    <h1>
+                        Usuários Cadastrados
+                    </h1>
+                </span>
+
+                <span class="col-md-6 " style="padding-top: 20px; text-align: right">
+
+                    <h:link outcome="cadastrarUsuario" styleClass="btn btn-default btn-md">
+                        <span class="btn-md glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Novo Usuário
+                    </h:link>
+                </span>
+            </div>
+
+            <hr></hr>
+
+            <h:form>
+                <h:dataTable value="#{UsuarioController.usuarios}" var="usuario"
+                             styleClass="table table-striped"
+                             columnClasses="col-md-6, col-md-5,  col-md-1">
+
+                    <h:column>
+                        <f:facet name="header">Nome</f:facet>
+                            #{usuario.nome}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">E-mail</f:facet>
+                            #{usuario.email}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Operações</f:facet>
+                        <span data-toggle="tooltip" title="Alterar registro">
+                            <h:commandLink id="alterar"  action="#{UsuarioController.alterarUsuario(usuario.id)}" styleClass="btn-md glyphicon glyphicon-edit col-md-1" />
+                        </span>
+
+                        <span data-toggle="tooltip" title="Excluir registro">
+                            <h:commandLink id="excluir"  action="#{UsuarioController.excluirUsuario(usuario.id)}" styleClass="btn-md glyphicon glyphicon-trash  col-md-1"/>
+                        </span>
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+        </ui:define>
+    </ui:composition>   
+</html>  
